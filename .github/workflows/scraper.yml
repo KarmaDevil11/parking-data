@@ -2,7 +2,7 @@ name: Auto-Scrape Parking Data
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Runs every 30 minutes
+    - cron: '0 * * * *'  # Runs every hour
   workflow_dispatch:  # Allows manual trigger
 
 jobs:
@@ -10,31 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set Up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests beautifulsoup4
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
 
-    - name: Run Scraper
-      run: python parking_scraper.py
+      - name: Run Scraper
+        run: python parking_scraper.py
 
-    - name: Configure Git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-    - name: Commit and Push Changes
-      run: |
-        git add parking_data.json
-        git commit -m "Auto-update parking data [$(date)]" || echo "No changes to commit"
-        git push origin main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add parking_data.json
+          git commit -m "Auto-update parking data" || exit 0
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/KarmaDevil11/parking-data.git main
