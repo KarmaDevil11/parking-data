@@ -26,8 +26,8 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add parking_data.json
           git commit -m "Auto-update parking data" || exit 0
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/KarmaDevil11/parking-data.git main
